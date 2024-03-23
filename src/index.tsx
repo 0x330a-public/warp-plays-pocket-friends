@@ -9,6 +9,7 @@ import {sleep} from "bun";
 const SERVER = "http://localhost:3069";
 
 export const app = new Frog({
+    origin: "https://pocket.mempool.online",
     imageOptions: {
         width: 200,
         height: 200,
