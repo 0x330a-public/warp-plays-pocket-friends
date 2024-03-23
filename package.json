@@ -7,9 +7,10 @@
     "serve": "bun run src/index.tsx"
   },
   "dependencies": {
-    "hono": "^4",
+    "axios": "1.6.8",
     "frog": "latest",
-    "axios": "1.6.8"
+    "hono": "^4",
+    "pinata-fdk": "^3.6.1"
   },
   "devDependencies": {
     "@types/bun": "latest",

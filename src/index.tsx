@@ -2,11 +2,18 @@ import {Button, Frog, TextInput} from 'frog'
 import {devtools} from 'frog/dev'
 import {serveStatic} from 'frog/serve-static'
 import axios from "axios";
-import {sleep} from "bun";
+import {env, sleep} from "bun";
+import {PinataFDK} from "pinata-fdk"
+import {pinata} from "frog/hubs";
 
 // import { neynar } from 'frog/hubs'
 
 const SERVER = "http://localhost:3069";
+
+const FDK = new PinataFDK({
+    pinata_jwt: env.PINATA_JWT!!,
+    pinata_gateway: env.PINATA_GATEWAY!!
+});
 
 export const app = new Frog({
     origin: "https://pocket.mempool.online",
@@ -15,6 +22,8 @@ export const app = new Frog({
         height: 200,
     },
     imageAspectRatio: "1:1",
+    hub: pinata(),
+    verify: true,
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
 })
@@ -104,6 +113,7 @@ app.frame('/game', async (c) => {
 })
 
 app.use('/*', serveStatic({root: './public'}))
+app.use("/", FDK.analyticsMiddleware({ frameId: "warp_monsters"}));
 devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
