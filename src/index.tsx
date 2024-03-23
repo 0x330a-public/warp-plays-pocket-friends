@@ -35,9 +35,27 @@ app.frame("/", (c) => {
                 width: 200,
                 height: 200,
                 background: "#8963d2",
-                display: 'flex'
+                display: 'flex',
+                flexDirection: "column",
+                alignItems: 'center',
+                justifyContent: 'space-between',
             }}>
-                <p style={{textAlign: 'center', color: 'white'}}>Warp plays pocket monsters :tm: lol</p>
+                <p style={{
+                    height: "10px",
+                    textAlign: 'center',
+                    color: 'white',
+                    fontSize: "0.4em",
+                }}>WarpMonsters: Play Pokemon Blue together</p>
+                <div style={{
+                    display: 'flex',
+                    boxShadow: "2px 3px",
+                    width: 160,
+                    height: 144,
+                    backgroundImage: `url('${SERVER}/buffer?cache${Date.now()}')`
+                }}/>
+                <p style={{
+                    height: "10px"
+                }}/>
             </div>
         ),
         intents: [
@@ -46,7 +64,7 @@ app.frame("/", (c) => {
     })
 })
 
-const getMove = async (stringValue: string|undefined) => {
+const getMove = async (stringValue: string | undefined) => {
     if (!stringValue) return undefined;
     let matched: string | undefined;
     let s = stringValue.toLowerCase();
@@ -104,7 +122,7 @@ app.frame('/game', async (c) => {
             </div>
         ),
         intents: [
-            <TextInput placeholder={"move: u,d,l,r,a,b,start,sel"}/>,
+            <TextInput placeholder={"input: U,D,L,R,A,B,START,SEL"}/>,
             <Button action="/game">Submit</Button>,
             <Button value="refresh">↺</Button>,
             <Button.Reset>Back</Button.Reset>
