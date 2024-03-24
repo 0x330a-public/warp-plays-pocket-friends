@@ -59,8 +59,9 @@ app.frame("/donate", (c) => {
                     height: "10px",
                     textAlign: 'center',
                     color: 'white',
-                    fontSize: "2em",
-                }}>Donate ETH on Base to help me build more :)</p>
+                    padding: "10px",
+                    fontSize: "1em",
+                }}>Donate USDC on Base to help me build more :)</p>
             </div>
         ),
         intents: [
