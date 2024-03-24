@@ -32,15 +32,9 @@ export const app = new Frog({
 
 app.transaction("/send-ether", (c) => {
     const { buttonValue } = c;
-    const decimals = 6;
-    const num = Number(buttonValue ?? 5) * (10**decimals);
-    const number = BigInt(num);
     return c.send({
-        abi: erc20Abi,
-        functionName: 'transfer',
-        args: [ env.DONATION!! as `0x${string}`, number ],
-        value: 0n,
-        to: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+        value: parseEther(buttonValue!!),
+        to: env.DONATION as `0x${string}`,
         chainId: "eip155:8453"
     })
 });
@@ -63,17 +57,43 @@ app.frame("/donate", (c) => {
                     color: 'white',
                     padding: "10px",
                     fontSize: "1em",
-                }}>Donate USDC on Base to help me build more :)</p>
+                }}>Donate ETH on Base to help me build more :)</p>
             </div>
         ),
         intents: [
-            <Button action="/send-ether" value={"5"}>DONATE USDC</Button>
+            <Button action="/send-ether" value={"0.005"}>DONATE ETH</Button>
         ]
+    })
+})
+
+app.frame('/finish', (c) => {
+    const { transactionId } = c
+    return c.res({
+        image: (
+            <div style={{
+                width: 200,
+                height: 200,
+                background: "#8963d2",
+                display: 'flex',
+                flexDirection: "column",
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}>
+                <p style={{
+                    height: "10px",
+                    textAlign: 'center',
+                    color: 'white',
+                    padding: "10px",
+                    fontSize: "1em",
+                }}>Transaction ID: {transactionId}</p>
+            </div>
+        )
     })
 })
 
 app.frame("/", (c) => {
     return c.res({
+        action: "/finish",
         image: (
             <div style={{
                 width: 200,
