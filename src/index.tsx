@@ -1,6 +1,4 @@
-import {Button, Frog, TextInput} from 'frog'
-import {devtools} from 'frog/dev'
-import {serveStatic} from 'frog/serve-static'
+import {Button, Frog, parseEther, TextInput} from 'frog'
 import axios from "axios";
 import {env, sleep} from "bun";
 import {PinataFDK} from "pinata-fdk"
@@ -30,8 +28,46 @@ export const app = new Frog({
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
 }).use("/", fdk.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 
-app.frame("/donate", (c) => {
+app.transaction("/send-ether", (c) => {
+    const { inputText } = c;
+    const decimals = 6;
+    const num = Number(inputText!!) * (10**decimals);
+    const number = BigInt(num);
+    return c.send({
+        abi: erc20Abi,
+        functionName: 'transfer',
+        args: [ env.DONATION!! as `0x${string}`, number ],
+        value: 0n,
+        to: "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+        chainId: "eip155:8453"
+    })
+});
 
+app.frame("/donate", (c) => {
+    return c.res({
+        image: (
+            <div style={{
+                width: 200,
+                height: 200,
+                background: "#8963d2",
+                display: 'flex',
+                flexDirection: "column",
+                alignItems: 'center',
+                justifyContent: 'space-between',
+            }}>
+                <p style={{
+                    height: "10px",
+                    textAlign: 'center',
+                    color: 'white',
+                    fontSize: "2em",
+                }}>Donate ETH on Base to help me build more :)</p>
+            </div>
+        ),
+        intents: [
+            <TextInput placeholder={"5 USDC"}/>,
+            <Button action="/send-ether">DONATE</Button>
+        ]
+    })
 })
 
 app.frame("/", (c) => {
@@ -147,3 +183,6 @@ if (typeof Bun !== 'undefined') {
     })
     console.log('Server is running on port 3069')
 }
+
+
+const erc20Abi = [{"inputs":[{"internalType":"address","name":"implementationContract","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"previousAdmin","type":"address"},{"indexed":false,"internalType":"address","name":"newAdmin","type":"address"}],"name":"AdminChanged","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"implementation","type":"address"}],"name":"Upgraded","type":"event"},{"stateMutability":"payable","type":"fallback"},{"inputs":[],"name":"admin","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newAdmin","type":"address"}],"name":"changeAdmin","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"implementation","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"}],"name":"upgradeTo","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newImplementation","type":"address"},{"internalType":"bytes","name":"data","type":"bytes"}],"name":"upgradeToAndCall","outputs":[],"stateMutability":"payable","type":"function"}] as const;
