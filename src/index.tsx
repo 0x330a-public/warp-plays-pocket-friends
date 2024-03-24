@@ -8,7 +8,7 @@ import {pinata} from "frog/hubs";
 
 // import { neynar } from 'frog/hubs'
 
-const SERVER = "http://localhost:3069";
+const SERVER = env.SERVER!!;
 
 const FDK = new PinataFDK({
     pinata_jwt: env.PINATA_JWT!!,
@@ -18,6 +18,7 @@ const FDK = new PinataFDK({
 export const app = new Frog({
     origin: "https://pocket.mempool.online",
     imageOptions: {
+        format: "png",
         width: 200,
         height: 200,
     },
@@ -98,8 +99,9 @@ app.frame('/game', async (c) => {
     const {buttonValue, inputText, status} = c
 
     await getMove(inputText);
-    if (inputText) {
-        await sleep(1500);
+    if (inputText && !buttonValue) {
+//	await new Promise(r => setTimeout(r, 200));
+        await sleep(300);
     }
 
     return c.res({
@@ -125,19 +127,19 @@ app.frame('/game', async (c) => {
             <TextInput placeholder={"input: U,D,L,R,A,B,START,SEL"}/>,
             <Button action="/game">Submit</Button>,
             <Button value="refresh">↺</Button>,
-            <Button.Reset>Back</Button.Reset>
+            <Button.Reset action="/">Back</Button.Reset>
         ],
     })
 })
 
-app.use('/*', serveStatic({root: './public'}))
-app.use("/", FDK.analyticsMiddleware({ frameId: "warp_monsters"}));
-devtools(app, {serveStatic})
+//app.use('/*', serveStatic({root: './public'}));
+app.use("/", FDK.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
+//devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
     Bun.serve({
         fetch: app.fetch,
-        port: 3000,
+        port: 3069,
     })
-    console.log('Server is running on port 3000')
+    console.log('Server is running on port 3069')
 }
