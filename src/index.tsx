@@ -3,6 +3,8 @@ import axios from "axios";
 import {env, sleep} from "bun";
 import {PinataFDK} from "pinata-fdk"
 import {pinata} from "frog/hubs";
+import {devtools} from "frog/dev";
+import {serveStatic} from "frog/serve-static";
 
 // import { neynar } from 'frog/hubs'
 
@@ -29,9 +31,9 @@ export const app = new Frog({
 }).use("/", fdk.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 
 app.transaction("/send-ether", (c) => {
-    const { inputText } = c;
+    const { buttonValue } = c;
     const decimals = 6;
-    const num = Number(inputText ?? 5) * (10**decimals);
+    const num = Number(buttonValue ?? 5) * (10**decimals);
     const number = BigInt(num);
     return c.send({
         abi: erc20Abi,
@@ -65,8 +67,7 @@ app.frame("/donate", (c) => {
             </div>
         ),
         intents: [
-            <TextInput placeholder={"5 USDC"}/>,
-            <Button action="/send-ether">DONATE</Button>
+            <Button action="/send-ether" value={"5"}>DONATE USDC</Button>
         ]
     })
 })
@@ -174,8 +175,8 @@ app.frame('/game', async (c) => {
     })
 })
 
-//app.use('/*', serveStatic({root: './public'}));
-//devtools(app, {serveStatic})
+// app.use('/*', serveStatic({root: './public'}));
+// devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
     Bun.serve({
