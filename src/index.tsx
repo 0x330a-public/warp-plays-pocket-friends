@@ -127,13 +127,13 @@ app.frame('/game', async (c) => {
             <TextInput placeholder={"input: U,D,L,R,A,B,START,SEL"}/>,
             <Button action="/game">Submit</Button>,
             <Button value="refresh">↺</Button>,
-            <Button.Reset action="/">Back</Button.Reset>
+            <Button action="/">Back</Button>
         ],
     })
 })
 
 //app.use('/*', serveStatic({root: './public'}));
-app.use("/", FDK.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
+app.use("/game", FDK.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 //devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
