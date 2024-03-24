@@ -25,9 +25,10 @@ export const app = new Frog({
     imageAspectRatio: "1:1",
     hub: pinata(),
     verify: true,
+    secret: env.SECRET,
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
-})
+}).use("/", fdk.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 
 app.frame("/donate", (c) => {
 
@@ -137,7 +138,6 @@ app.frame('/game', async (c) => {
 })
 
 //app.use('/*', serveStatic({root: './public'}));
-app.use("/", fdk.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 //devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
