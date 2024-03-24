@@ -10,7 +10,7 @@ import {pinata} from "frog/hubs";
 
 const SERVER = env.SERVER!!;
 
-const FDK = new PinataFDK({
+const fdk = new PinataFDK({
     pinata_jwt: env.PINATA_JWT!!,
     pinata_gateway: env.PINATA_GATEWAY!!
 });
@@ -27,6 +27,10 @@ export const app = new Frog({
     verify: true,
     // Supply a Hub to enable frame verification.
     // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' }),
+})
+
+app.frame("/donate", (c) => {
+
 })
 
 app.frame("/", (c) => {
@@ -133,7 +137,7 @@ app.frame('/game', async (c) => {
 })
 
 //app.use('/*', serveStatic({root: './public'}));
-app.use("/game", FDK.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
+app.use("/", fdk.analyticsMiddleware({ frameId: "warp_monsters", customId: "warp_custom" }));
 //devtools(app, {serveStatic})
 
 if (typeof Bun !== 'undefined') {
