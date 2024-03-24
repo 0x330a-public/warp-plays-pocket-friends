@@ -31,7 +31,7 @@ export const app = new Frog({
 app.transaction("/send-ether", (c) => {
     const { inputText } = c;
     const decimals = 6;
-    const num = Number(inputText!!) * (10**decimals);
+    const num = Number(inputText ?? 5) * (10**decimals);
     const number = BigInt(num);
     return c.send({
         abi: erc20Abi,
